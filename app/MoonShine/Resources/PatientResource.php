@@ -7,17 +7,17 @@ namespace App\MoonShine\Resources;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Patient;
 
-use MoonShine\Resources\ModelResource;
+use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\Decorations\Block;
-use MoonShine\Fields\ID;
+use MoonShine\UI\Fields\ID;
 
-use MoonShine\Fields\Image;
-use MoonShine\Fields\Field;
-use MoonShine\Fields\Text;
-use MoonShine\Fields\TinyMce;
-use MoonShine\Fields\Relationships\BelongsTo; 
-use MoonShine\Components\MoonShineComponent;
-
+use MoonShine\UI\Fields\Image;
+use MoonShine\UI\Fields\Field;
+use MoonShine\UI\Fields\Text;
+use MoonShine\TinyMce\Fields\TinyMce;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo; 
+use MoonShine\UI\Components\MoonShineComponent;
+use VI\MoonShineSpatieMediaLibrary\Fields\MediaLibrary;
 /**
  * @extends ModelResource<Patient>
  */
@@ -41,9 +41,17 @@ class PatientResource extends ModelResource
             Text::make(
                 'Name',
                 'user.first_name',),
+                Text::make('Фамилия'    , 'user.last_name',),
             Text::make(
-                'Description',
+                'E-mail',
+                'user.email',),
+                Text::make('Время создания'    , 'user.created_at',),//->sortable(),
+                Text::make('Время обновления'    , 'updated_at',)->sortable(),
+            Text::make('Снилс','user.snils')->sortable(),    
+            Text::make(
+                'Описание',
                 'user.description',),
+                MediaLibrary::make('Фото', 'profile'),
         ];
     }
 
@@ -51,9 +59,14 @@ class PatientResource extends ModelResource
         return [
             ID::make()->sortable(),
            
-            Text::make('First name', 'user.first_name',)
+            Text::make('Имя', 'user.first_name',)
                 ->onApply(function(Patient $item, $value) {
                     $item->user()->update(['first_name' => $value]);
+                    return $item;
+                }),
+                Text::make('Фамилия'    , 'user.last_name',)
+                ->onApply(function(Patient $item, $value) {
+                    $item->user()->update(['last_name' => $value]);
                     return $item;
                 }),
             Text::make('Description', 'user.description',)
@@ -76,8 +89,5 @@ class PatientResource extends ModelResource
      * @return array<string, string[]|string>
      * @see https://laravel.com/docs/validation#available-validation-rules
      */
-    public function rules(Model $item): array
-    {
-        return [];
-    }
+
 }

@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
-
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 /**
  * App\Models\Doctor
  *
@@ -20,7 +22,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Specialization[] $specializations
  * @property-read int|null $specializations_count
- * @property-read \App\Models\UserQ $user
+ * @property-read \App\Models\User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder|Doctor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Doctor newQuery()
@@ -45,9 +47,9 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Doctor whereLinkedinUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Doctor whereTwitterUrl($value)
  */
-class Doctor extends Model
+class Doctor extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     protected $table = 'doctors';
 
@@ -99,17 +101,17 @@ class Doctor extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(UserQ::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function doctorUser(): BelongsTo
     {
-        return $this->belongsTo(UserQ::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function testUser(): BelongsTo
     {
-        return $this->belongsTo(UserQ::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function specializations(): BelongsToMany
@@ -135,5 +137,24 @@ class Doctor extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        
+        $this->addMediaCollection('profile')
+            ->singleFile()
+            ->useDisk('public');
+     //       $this->addMediaCollection('cover')->singleFile();
+    }
+
+    public function getProfileImageAttribute(): string
+    {
+        $media = $this->getMedia(Patient::PROFILE)->first();
+        if (!empty($media)) {
+            return $media->getFullUrl(); // Uncommented and fixed
+//            return $media;//->getFullUrl();
+        }
+        return asset('web/media/avatars/male.png');
     }
 }

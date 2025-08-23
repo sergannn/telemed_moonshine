@@ -7,18 +7,18 @@ namespace App\MoonShine\Resources;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Story;
 
-use MoonShine\Resources\ModelResource;
+use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\Decorations\Block;
-use MoonShine\Fields\ID;
+use MoonShine\UI\Fields\ID;
 
-use MoonShine\Fields\Image;
-use MoonShine\Fields\Field;
-use MoonShine\Fields\Text;
-use MoonShine\Fields\Number;
-use MoonShine\Fields\TinyMce;
-use MoonShine\Fields\Relationships\BelongsTo; 
-use MoonShine\Components\MoonShineComponent;
-use MoonShine\Fields\RangeSlider; 
+use MoonShine\UI\Fields\Image;
+use MoonShine\UI\Fields\Field;
+use MoonShine\UI\Fields\Text;
+use MoonShine\UI\Fields\Number;
+use MoonShine\TinyMce\Fields\TinyMce;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo; 
+use MoonShine\UI\Components\MoonShineComponent;
+use MoonShine\UI\Fields\RangeSlider; 
 /**
  * @extends ModelResource<CustomPost>
  */
@@ -49,7 +49,7 @@ class StoryResource extends ModelResource
          //   TinyMce::make( 'Html' ),
             Number::make('Duration'),
           
-            BelongsTo::make( 'Category', 'category', 'title', resource: new CategoryResource() )
+            BelongsTo::make( 'Category', 'category', 'title', resource: CategoryResource::class )
                 ->nullable()
                 ->badge(),
         ];
@@ -69,7 +69,7 @@ class StoryResource extends ModelResource
                 Number::make('Duration')->buttons(),
             
            //     ->fromTo('duration_from', 'duration_to') ,
-                BelongsTo::make( 'Category', 'category', 'title', resource:  new CategoryResource() )
+                BelongsTo::make( 'Category', 'category', 'title', resource: CategoryResource::class )
                     ->nullable()
                     ->badge(),
          
@@ -82,14 +82,5 @@ class StoryResource extends ModelResource
         ];
     }
 
-    /**
-     * @param Story $item
-     *
-     * @return array<string, string[]|string>
-     * @see https://laravel.com/docs/validation#available-validation-rules
-     */
-    public function rules(Model $item): array
-    {
-        return [];
-    }
+
 }

@@ -13,11 +13,11 @@ use MoonShine\Laravel\Fields\Slug;
 use MoonShine\Laravel\Pages\Crud\DetailPage;
 use MoonShine\Laravel\Pages\Crud\FormPage;
 use MoonShine\UI\Components\Layout\Box;
-use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Number;
-use MoonShine\UI\Fields\Text;
+use  Moonshine\UI\Fields\ID;
+use  MoonShine\UI\Fields\Number;
+use  MoonShine\UI\Fields\Text;
 
-use MoonShine\Resources\ModelResource;
+use MoonShine\Laravel\Resources\ModelResource;
 
 class CategoryResource extends ModelResource
 {

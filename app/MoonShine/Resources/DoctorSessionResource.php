@@ -7,16 +7,16 @@ namespace App\MoonShine\Resources;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\DoctorSession;
 
-use MoonShine\Resources\ModelResource;
+use MoonShine\Laravel\Resources\ModelResource;
 use App\MoonShine\Resources\WeekDayResource;
 use MoonShine\Decorations\Block;
-use MoonShine\Fields\ID;
-use MoonShine\Fields\Field;
-use MoonShine\Fields\Text;
-use MoonShine\Fields\Select;
-use MoonShine\Fields\Relationships\BelongsTo;
-use MoonShine\Fields\Relationships\HasMany;
-use MoonShine\Components\MoonShineComponent;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Field;
+use MoonShine\UI\Fields\Text;
+use MoonShine\UI\Fields\Select;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
+use MoonShine\UI\Components\MoonShineComponent;
 
 /**
  * @extends ModelResource<DoctorSession>
@@ -37,7 +37,7 @@ class DoctorSessionResource extends ModelResource
     public function indexFields(): array {
         return [
             ID::make()->sortable(),
-            BelongsTo::make('Doctor', 'doctor', 'user.first_name', resource: new DoctorResource())
+            BelongsTo::make('Doctor', 'doctor', 'user.first_name', resource:  DoctorResource::class)
                 ->nullable(),
             Text::make('Session Meeting Time', 'session_meeting_time'),
             Text::make('Session Gap', 'session_gap'),
@@ -47,15 +47,15 @@ class DoctorSessionResource extends ModelResource
     public function formFields(): array {
         return [
             ID::make()->sortable(),
-            BelongsTo::make('Doctor', 'doctor', 'user.first_name', resource: new DoctorResource())
+            BelongsTo::make('Doctor', 'doctor', 'user.first_name', resource: DoctorResource::class)
                 ->nullable(),
-            Select::make('Session Meeting Time', 'session_meeting_time')
+            Select::make('Session Meeting Time:', 'session_meeting_time')
                 ->options(DoctorSession::SESSION_MEETING_TIME)
                 ->required(),
             Select::make('Session Gap', 'session_gap')
                 ->options(DoctorSession::GAPS)
                 ->required(),
-            HasMany::make('Week Days', 'sessionWeekDays', resource: new WeekDayResource())
+            HasMany::make('Week Days', 'sessionWeekDays', resource:  WeekDayResource::class)
                 ->fields([
                     Select::make('Day of Week', 'day_of_week')
                         ->options([
@@ -93,7 +93,7 @@ class DoctorSessionResource extends ModelResource
     public function detailFields(): array {
         return [
             ...$this->indexFields(),
-            HasMany::make('Week Days', 'sessionWeekDays', resource: new WeekDayResource())
+            HasMany::make('Week Days', 'sessionWeekDays', resource: WeekDayResource::class)
                 ->fields([
                     Text::make('Day of Week', 'day_of_week'),
                     Text::make('Start Time', 'start_time'),
@@ -110,7 +110,7 @@ class DoctorSessionResource extends ModelResource
      * @return array<string, string[]|string>
      * @see https://laravel.com/docs/validation#available-validation-rules
      */
-    public function rules(Model $item): array
+    public function rules(mixed $item): array
     {
         return [
             'doctor_id' => 'required|unique:doctor_sessions,doctor_id,' . $item->id,

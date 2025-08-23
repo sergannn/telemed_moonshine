@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DoctorSessionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -7,6 +8,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('doctor-session-time', [DoctorSessionController::class, 'getDoctorSession'])->name('doctor-session-time');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

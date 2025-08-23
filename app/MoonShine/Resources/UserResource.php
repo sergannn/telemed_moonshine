@@ -12,12 +12,13 @@ use MoonShine\UI\Components\ActionButton;
 use MoonShine\UI\Components\Collapse;
 use MoonShine\UI\Components\FormBuilder;
 use MoonShine\UI\Components\Layout\Box;
-use MoonShine\UI\Fields\Email;
-use MoonShine\UI\Fields\HiddenIds;
-use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Password;
-use MoonShine\UI\Fields\PasswordRepeat;
-use MoonShine\UI\Fields\Text;
+use  MoonShine\UI\Fields\Email;
+use  MoonShine\UI\Fields\HiddenIds;
+use  MoonShine\UI\Fields\ID;
+use  MoonShine\UI\Fields\Password;
+use  MoonShine\UI\Fields\PasswordRepeat;
+use  MoonShine\UI\Fields\Text;
+use VI\MoonShineSpatieMediaLibrary\Fields\MediaLibrary;
 
 
 class UserResource extends ModelResource
@@ -30,8 +31,10 @@ class UserResource extends ModelResource
     {
         return [
             ID::make()->sortable(),
-            Text::make('Name'),
+            Text::make('first_name'),
+            Text::make('snils', 'SNILS'),
             Email::make('Email'),
+            Text::make('updated_at', 'Updated At')->sortable(),
         ];
     }
 
@@ -41,6 +44,7 @@ class UserResource extends ModelResource
             Box::make([
                 ID::make()->sortable(),
                 Text::make('Name'),
+                Text::make('snils', 'SNILS'),
                 Email::make('Email'),
 
                 Collapse::make('Password', [

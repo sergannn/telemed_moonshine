@@ -17,3 +17,15 @@ Route::apiResource('/stories', \App\Http\Controllers\API\StoryController::class)
 Route::apiResource('/articles', \App\Http\Controllers\API\ArticleController::class);
 
 /*=====  End of articles   ======*/
+
+/*===========================
+=           recommendations           =
+=============================*/
+
+Route::apiResource('/recommendations', \App\Http\Controllers\API\RecommendationController::class);
+
+/*=====  End of recommendations   ======*/
+Route::apiResource('/specializations', \App\Http\Controllers\API\SpecializationController::class);
+
+Route::get("activespecializations",[\App\Http\Controllers\API\SpecializationController::class,'showActive']);
+/*=====  End of specializations   ======*/

@@ -4,76 +4,62 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use MoonShine\Providers\MoonShineApplicationServiceProvider;
-use MoonShine\MoonShine;
-use MoonShine\Menu\MenuGroup;
-use MoonShine\Menu\MenuItem;
-use MoonShine\Resources\MoonShineUserResource;
-use MoonShine\Resources\MoonShineUserRoleResource;
-use MoonShine\Contracts\Resources\ResourceContract;
-use MoonShine\Menu\MenuElement;
-use MoonShine\Pages\Page;
-use Closure;
-use App\MoonShine\Resources\CategoryResource;
-use App\MoonShine\Resources\StoryResource;
+use App\MoonShine\Resources\SpecializationResource;
+use App\MoonShine\Resources\UpcomingAppointmentsResource;
+use App\MoonShine\Resources\UserResourceSer;
+use Illuminate\Support\ServiceProvider;
+use MoonShine\Contracts\Core\DependencyInjection\ConfiguratorContract;
+use MoonShine\Contracts\Core\DependencyInjection\CoreContract;
+use MoonShine\Laravel\DependencyInjection\MoonShine;
+use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
+use App\MoonShine\Laravel\Resources\MoonShineUserResource;
+use App\MoonShine\Laravel\Resources\MoonShineUserRoleResource;
+
 use App\MoonShine\Resources\ArticleResource;
+use App\MoonShine\Resources\CategoryResource;
 use App\MoonShine\Resources\DoctorResource;
+
+use App\MoonShine\Resources\DoctorSessionResource;
 use App\MoonShine\Resources\PatientResource;
+use App\MoonShine\Resources\StoryResource;
+use App\MoonShine\Resources\RecommendationResource;
+use App\MoonShine\Resources\UserResource;
+use App\MoonShine\Resources\SerUserResource;
 use App\MoonShine\Resources\WeekDayResource;
 
-class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
+class MoonShineServiceProvider extends ServiceProvider
 {
     /**
-     * @return list<ResourceContract>
+     * @param  MoonShine  $core
+     * @param  MoonShineConfigurator  $config
+     *
      */
-    protected function resources(): array
+    public function boot(CoreContract $core, ConfiguratorContract $config): void
     {
-        return [];
+        $core
+            ->resources([
+                \MoonShine\Laravel\Resources\MoonShineUserResource::class,
+                \MoonShine\Laravel\Resources\MoonShineUserRoleResource::class,
+                ArticleResource::class,
+                CategoryResource::class,
+DoctorResource::class,
+SpecializationResource::class,
+DoctorSessionResource::class,
+
+UpcomingAppointmentsResource::class,
+
+PatientResource::class,
+                StoryResource::class,
+                RecommendationResource::class,
+                UserResource::class,
+WeekDayResource::class,
+SerUserResource::class,///
+            ])
+            ->pages([
+                ...$config->getPages(),
+            ])
+        ;
     }
 
-    /**
-     * @return list<Page>
-     */
-    protected function pages(): array
-    {
-        return [];
-    }
 
-    /**
-     * @return Closure|list<MenuElement>
-     */
-    protected function menu(): array
-    {
-        return [
-            MenuGroup::make(static fn() => __('moonshine::ui.resource.system'), [
-                MenuItem::make(
-                    static fn() => __('moonshine::ui.resource.admins_title'),
-                    new MoonShineUserResource()
-                ),
-                MenuItem::make(
-                    static fn() => __('moonshine::ui.resource.role_title'),
-                    new MoonShineUserRoleResource()
-                ),
-            ]),
-
-            MenuItem::make('Documentation', 'https://moonshine-laravel.com/docs')
-                ->badge(fn() => 'Check')
-                ->blank(),
-                MenuItem::make("Общее",''),
-                MenuItem::make('Stories', new StoryResource)->icon('heroicons.newspaper') ,
-                MenuItem::make('Articles', new ArticleResource)->icon('heroicons.queue-list'),
-                MenuItem::make('Doctors', new DoctorResource)->icon('heroicons.queue-list'),
-                MenuItem::make('Patients', new PatientResource)->icon('heroicons.queue-list'),
-                MenuItem::make('Days', filler: new WeekDayResource)->icon('heroicons.calendar'),
-      
-        ];
-    }
-
-    /**
-     * @return Closure|array{css: string, colors: array, darkColors: array}
-     */
-    protected function theme(): array
-    {
-        return [];
-    }
 }

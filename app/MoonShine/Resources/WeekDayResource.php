@@ -7,14 +7,14 @@ namespace App\MoonShine\Resources;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\WeekDay;
 
-use MoonShine\Resources\ModelResource;
+use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\Decorations\Block;
-use MoonShine\Fields\ID;
-use MoonShine\Fields\Field;
-use MoonShine\Fields\Text;
-use MoonShine\Fields\Select;
-use MoonShine\Fields\Relationships\BelongsTo;
-use MoonShine\Components\MoonShineComponent;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Field;
+use MoonShine\UI\Fields\Text;
+use MoonShine\UI\Fields\Select;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+use MoonShine\UI\Components\MoonShineComponent;
 
 /**
  * @extends ModelResource<WeekDay>
@@ -35,7 +35,7 @@ class WeekDayResource extends ModelResource
     public function indexFields(): array {
         return [
             ID::make()->sortable(),
-            BelongsTo::make('Doctor Session', 'doctorSession', 'id', resource: new DoctorSessionResource())
+            BelongsTo::make('Doctor Session', 'doctorSession', 'id', resource: DoctorSessionResource::class)
                 ->nullable(),
             Text::make('Day of Week', 'day_of_week'),
             Text::make('Start Time', 'start_time'),
@@ -48,7 +48,7 @@ class WeekDayResource extends ModelResource
     public function formFields(): array {
         return [
             ID::make()->sortable(),
-            BelongsTo::make('Doctor Session', 'doctorSession', 'id', resource: new DoctorSessionResource())
+            BelongsTo::make('Doctor Session', 'doctorSession', 'id', resource: DoctorSessionResource::class)
                 ->nullable(),
             Select::make('Day of Week', 'day_of_week')
                 ->options([
@@ -92,7 +92,7 @@ class WeekDayResource extends ModelResource
      * @return array<string, string[]|string>
      * @see https://laravel.com/docs/validation#available-validation-rules
      */
-    public function rules(Model $item): array
+    public function rules(mixed $item): array
     {
         return [
             'doctor_session_id' => 'required',

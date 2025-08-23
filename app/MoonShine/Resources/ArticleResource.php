@@ -7,16 +7,17 @@ namespace App\MoonShine\Resources;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Article;
 
-use MoonShine\Resources\ModelResource;
-use MoonShine\Decorations\Block;
-use MoonShine\Fields\ID;
+use MoonShine\Laravel\Resources\ModelResource;
 
-use MoonShine\Fields\Image;
-use MoonShine\Fields\Field;
-use MoonShine\Fields\Text;
-use MoonShine\Fields\TinyMce;
-use MoonShine\Fields\Relationships\BelongsTo; 
-use MoonShine\Components\MoonShineComponent;
+use MoonShine\Decorations\Block;
+use MoonShine\UI\Fields\ID;
+
+use MoonShine\UI\Fields\Image;
+use MoonShine\UI\Fields\Field;
+use MoonShine\UI\Fields\Text;
+use MoonShine\TinyMce\Fields\TinyMce;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo; 
+use MoonShine\UI\Components\MoonShineComponent;
 
 /**
  * @extends ModelResource<CustomPost>
@@ -46,7 +47,7 @@ class ArticleResource extends ModelResource
             Image::make( 'Image' ),
           //      ->updateOnPreview(),
             TinyMce::make( 'Html' ),
-            BelongsTo::make( 'Category', 'category', 'title', resource: new CategoryResource() )
+            BelongsTo::make( 'Category', 'category', 'title', resource:  CategoryResource::class   )
                 ->nullable()
                 ->badge(),
         ];
@@ -63,7 +64,7 @@ class ArticleResource extends ModelResource
                 Image::make( 'Image' ),
                   //  ->updateOnPreview(),
                 TinyMce::make( 'Html' ),
-                BelongsTo::make( 'Category', 'category', 'title', resource:  new CategoryResource() )
+                BelongsTo::make( 'Category', 'category', 'title', resource:   CategoryResource::class )
                     ->nullable()
                     ->badge(),
          
@@ -82,7 +83,7 @@ class ArticleResource extends ModelResource
      * @return array<string, string[]|string>
      * @see https://laravel.com/docs/validation#available-validation-rules
      */
-    public function rules(Model $item): array
+    public function rules(mixed $item): array
     {
         return [];
     }

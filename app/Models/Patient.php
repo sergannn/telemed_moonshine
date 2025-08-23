@@ -53,7 +53,7 @@ use App\Models\SmartPatientCards;
  * @property-read int|null $permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
  * @property-read int|null $roles_count
- * @property-read \App\Models\UserQ $user
+ * @property-read \App\Models\User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder|Patient permission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|Patient role($roles, $guard = null)
@@ -208,12 +208,12 @@ if(isset($this->user->gender)) {
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(UserQ::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function patientUser(): BelongsTo
     {
-        return $this->belongsTo(UserQ::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function smartPatientCard(): BelongsTo

@@ -12,6 +12,7 @@ class Article extends Model
         'description',
         'image',
         'html',
+        'video_url',
         'category_id'
     ];
 

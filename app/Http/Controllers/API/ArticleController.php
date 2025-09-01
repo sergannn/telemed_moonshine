@@ -18,7 +18,7 @@ class ArticleController extends Controller
 
     public function index()
     {
-        $articles = Article::dynamicPaginate();
+        $articles = Article::with('category')->dynamicPaginate();
 
         return $articles;
     }
@@ -27,26 +27,46 @@ class ArticleController extends Controller
     {
         $article = Article::create($request->validated());
 
-        return $this->responseCreated('Article created successfully', $article);
+        return response()->json([
+            'success' => true,
+            'data' => $article,
+            'message' => 'Article created successfully',
+        ], 201);
     }
 
     public function show(Article $article): JsonResponse
     {
-        return $this->responseSuccess(null, $article);
+        // Load the category relationship
+        $article->load('category');
+        
+        // Use Laravel's built-in response method
+        return response()->json([
+            'success' => true,
+            'data' => $article,
+            'message' => null,
+        ]);
     }
 
     public function update(Request $request, Article $article): JsonResponse
     {
         $article->update($request->validated());
 
-        return $this->responseSuccess('Article updated Successfully', $article);
+        return response()->json([
+            'success' => true,
+            'data' => $article,
+            'message' => 'Article updated Successfully',
+        ]);
     }
 
     public function destroy(Article $article): JsonResponse
     {
         $article->delete();
 
-        return $this->responseDeleted();
+        return response()->json([
+            'success' => true,
+            'data' => null,
+            'message' => 'Article deleted successfully',
+        ]);
     }
 
    

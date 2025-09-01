@@ -48,6 +48,7 @@ use App\MoonShine\Resources\RecommendationResource;
 use App\MoonShine\Resources\SerUserResource;
 use App\MoonShine\Resources\WeekDayResource;
 use App\MoonShine\Resources\UpcomingAppointmentsResource;
+use App\MoonShine\Resources\ReviewResource;
 final class MoonShineLayout extends \MoonShine\Laravel\Layouts\AppLayout
 {
     protected function assets(): array
@@ -81,7 +82,7 @@ final class MoonShineLayout extends \MoonShine\Laravel\Layouts\AppLayout
             MenuItem::make('Пациенты', PatientResource::class, 'users'),
             MenuItem::make('Специализации', SpecializationResource::class, 'shield-check'),
             MenuItem::make('Сеансы', UpcomingAppointmentsResource::class, 'shield-check'),
-            
+             MenuItem::make( 'Категории статей', CategoryResource::class, 'book-open'),
             MenuItem::make( 'Stories', StoryResource::class, 'book-open'),
             MenuItem::make('Рекомендуем Вам', RecommendationResource::class, 'book-open'),
             MenuItem::make('Статьи', ArticleResource::class, 'newspaper'),
@@ -90,7 +91,8 @@ final class MoonShineLayout extends \MoonShine\Laravel\Layouts\AppLayout
             MenuGroup::make('Система', [
                 MenuItem::make('Admins', MoonShineUserResource::class, 'users'),
                 MenuItem::make('Roles', MoonShineUserRoleResource::class, 'shield-check'),
-            ], 'cog-6-tooth')
+            ], 'cog-6-tooth'),
+            MenuItem::make('Reviews', ReviewResource::class),
         ];
     }
 }

@@ -13,9 +13,10 @@ use MoonShine\Laravel\Fields\Slug;
 use MoonShine\Laravel\Pages\Crud\DetailPage;
 use MoonShine\Laravel\Pages\Crud\FormPage;
 use MoonShine\UI\Components\Layout\Box;
-use  Moonshine\UI\Fields\ID;
-use  MoonShine\UI\Fields\Number;
-use  MoonShine\UI\Fields\Text;
+use MoonShine\UI\Fields\ID;
+
+use MoonShine\UI\Fields\Number;
+use MoonShine\UI\Fields\Text;
 
 use MoonShine\Laravel\Resources\ModelResource;
 
@@ -86,15 +87,15 @@ class CategoryResource extends ModelResource
             ...$this->indexFields(),
         ];
     }
-
+/*
     protected function pages(): array
     {
         return [
-            CategoryTreePage::class,
+           // CategoryTreePage::class,
             FormPage::class,
             DetailPage::class,
         ];
-    }
+    }*/
 
     public function rules(mixed $item): array
     {

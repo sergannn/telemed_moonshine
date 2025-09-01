@@ -26,6 +26,7 @@ use App\MoonShine\Resources\RecommendationResource;
 use App\MoonShine\Resources\UserResource;
 use App\MoonShine\Resources\SerUserResource;
 use App\MoonShine\Resources\WeekDayResource;
+use App\MoonShine\Resources\ReviewResource;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -42,18 +43,19 @@ class MoonShineServiceProvider extends ServiceProvider
                 \MoonShine\Laravel\Resources\MoonShineUserRoleResource::class,
                 ArticleResource::class,
                 CategoryResource::class,
-DoctorResource::class,
-SpecializationResource::class,
-DoctorSessionResource::class,
+                DoctorResource::class,
+                SpecializationResource::class,
+                DoctorSessionResource::class,
 
-UpcomingAppointmentsResource::class,
+                UpcomingAppointmentsResource::class,
 
-PatientResource::class,
+                PatientResource::class,
                 StoryResource::class,
                 RecommendationResource::class,
                 UserResource::class,
-WeekDayResource::class,
-SerUserResource::class,///
+                WeekDayResource::class,
+                SerUserResource::class,///,
+                ReviewResource::class,
             ])
             ->pages([
                 ...$config->getPages(),

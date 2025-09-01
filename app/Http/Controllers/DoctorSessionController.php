@@ -172,7 +172,23 @@ class DoctorSessionController extends AppBaseController
         }
         // Convert minutes to seconds
         $timezone_name = timezone_name_from_abbr('', $timezone_offset_minutes * 60, false);
-        $date = Carbon::createFromFormat('Y-m-d', $request->date);
+        
+        // Validate and parse the date parameter
+        try {
+            $date = Carbon::createFromFormat('Y-m-d', $request->date);
+            if (!$date) {
+                throw new \Exception('Invalid date format');
+            }
+        } catch (\Exception $e) {
+            // If parsing fails, try to extract just the date part
+            $dateString = $request->date;
+            if (preg_match('/(\d{4}-\d{2}-\d{2})/', $dateString, $matches)) {
+                $date = Carbon::createFromFormat('Y-m-d', $matches[1]);
+            } else {
+                return $this->sendError('Invalid date format. Expected YYYY-MM-DD.');
+            }
+        }
+        
         $doctorWeekDaySessions = WeekDay::whereDayOfWeek($date->dayOfWeek)->whereDoctorId($doctorId)->with('doctorSession')->get();
         if ($doctorWeekDaySessions->count() == 0) {
             if (! empty(getLogInUser()->language)) {
@@ -290,20 +306,76 @@ foreach ($doctorWeekDaySessions as $doctorWeekDaySession) {
     }
     public function getTimeSlot($interval, $start_time, $end_time)
 {
-    $start_time = preg_replace('/\s?[AP]M$/i', '', $start_time);
-    $end_time = preg_replace('/\s?[AP]M$/i', '', $end_time);
+    // Clean and validate time inputs
+    $start_time = $this->cleanTimeString($start_time);
+    $end_time = $this->cleanTimeString($end_time);
     
-    $start = Carbon::createFromFormat('H:i', $start_time);
-    $end = Carbon::createFromFormat('H:i', $end_time);
-    
-    $time = [];
-    $current = $start->copy();
-    $i = 0;
+    try {
+        $start = Carbon::createFromFormat('H:i', $start_time);
+        $end = Carbon::createFromFormat('H:i', $end_time);
+        
+        if (!$start || !$end) {
+            throw new \Exception('Invalid time format');
+        }
+        
+        $time = [];
+        $current = $start->copy();
+        $i = 0;
 
+        while ($current < $end) {
+            $slotStart = $current->format('H:i');
+            $current->addMinutes($interval);
+            $slotEnd = $current->format('H:i');
+            
+            if ($current > $end) {
+                break;
+            }
+            
+            $time[++$i] = [$slotStart, $slotEnd];
+        }
+
+        return $time;
+    } catch (\Exception $e) {
+        // Fallback to simple time calculation if Carbon parsing fails
+        return $this->getTimeSlotFallback($interval, $start_time, $end_time);
+    }
+}
+
+/**
+ * Clean time string by removing any non-time characters
+ */
+private function cleanTimeString($timeString)
+{
+    // Remove AM/PM and any trailing whitespace
+    $timeString = preg_replace('/\s?[AP]M$/i', '', $timeString);
+    // Extract just the time part (HH:MM format)
+    if (preg_match('/(\d{1,2}:\d{2})/', $timeString, $matches)) {
+        return $matches[1];
+    }
+    return $timeString;
+}
+
+/**
+ * Fallback method for time slot calculation without Carbon
+ */
+private function getTimeSlotFallback($interval, $start_time, $end_time)
+{
+    $time = [];
+    $i = 0;
+    
+    $start = strtotime($start_time);
+    $end = strtotime($end_time);
+    
+    if ($start === false || $end === false || $start >= $end) {
+        return $time;
+    }
+    
+    $current = $start;
+    
     while ($current < $end) {
-        $slotStart = $current->format('H:i');
-        $current->addMinutes($interval);
-        $slotEnd = $current->format('H:i');
+        $slotStart = date('H:i', $current);
+        $current += $interval * 60; // Convert minutes to seconds
+        $slotEnd = date('H:i', $current);
         
         if ($current > $end) {
             break;
@@ -311,7 +383,7 @@ foreach ($doctorWeekDaySessions as $doctorWeekDaySession) {
         
         $time[++$i] = [$slotStart, $slotEnd];
     }
-
+    
     return $time;
 }
     /**

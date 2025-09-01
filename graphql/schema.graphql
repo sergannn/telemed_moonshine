@@ -831,7 +831,7 @@ type UpdateUserProfileResponseTest {
 }
 type Query {
     user(id: ID! @eq): User @find
-    users: [User!]! @paginate
+    users(email: String): [User!]! @paginate(resolver: "App\\GraphQL\\Queries\\Users")
     doctor(id: ID! @eq): Doctor @find
     doctors: [Doctor!] @paginate
     appointment(id: ID! @eq): Appointment @find
@@ -892,7 +892,33 @@ input WeekDayInput {
     end_time_type: String,
 }
 
+input CreateReviewInput {
+    doctor_id: ID!
+    rating: Int! @rules(apply: ["required", "integer", "min:1", "max:5"])
+    review: String! @rules(apply: ["required", "max:121"])
+}
+
+input CreateDoctorReviewInput {
+    patient_id: ID!
+    rating: Int! @rules(apply: ["required", "integer", "min:1", "max:5"])
+    review: String! @rules(apply: ["required", "max:121"])
+}
+
+type CreateReviewResponse {
+    review: Review!
+    status: String!
+}
+
+type CreateDoctorReviewResponse {
+    review: Review!
+    status: String!
+}
+
 type Mutation {
+    "Create a new review"
+    createReview(input: CreateReviewInput!): CreateReviewResponse! @field(resolver: "App\\GraphQL\\Mutations\\CreateReview")
+    "Create a new doctor review for patient"
+    createDoctorReview(input: CreateDoctorReviewInput!): CreateDoctorReviewResponse! @field(resolver: "App\\GraphQL\\Mutations\\CreateDoctorReview")
     "Update user profile documents"
     updateUserDocuments(input: UpdateUserDocumentsInput!): UpdateUserDocumentsResponse! @field(resolver: "App\\GraphQL\\Mutations\\UpdateUserDocuments")
     "Update user profile settings"

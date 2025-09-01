@@ -49,12 +49,16 @@ class DoctorResource extends ModelResource
             Text::make('Полное имя', 'user.full_name'),
          //   Text::make('Имя', 'user.first_name'),
          //   Text::make('Фамилия', 'user.last_name'),
-            Text::make('Описание', 'user.description'),
+         //   Text::make('Описание', 'user.description'),
             Text::make(
                 'E-mail',
                 'user.email',),
                 Text::make('Время создания'    , 'user.created_at',),//->sortable(),
                 Text::make('Время обновления'    , 'user.updated_at',)->sortable(),
+            Text::make('Опыт работы (лет)', 'experience'),
+            Text::make('Отзывы', '', function(Doctor $doctor) {
+                return $doctor->reviews()->count() . ' отзывов';
+            }),
           /*  Image::make('Image')
             ->disk('public')
            // ->dir('doctors')
@@ -112,7 +116,8 @@ class DoctorResource extends ModelResource
                     }),
                     MediaLibrary::make('Фото', 'profile')->multiple(),
                     BelongsToMany::make(__('Специальность'), 'specializations','name'),
-                    HasMany::make('Расписание', 'doctorSession', resource: DoctorSessionResource::class)
+                    Text::make('Опыт работы (лет)', 'experience'),
+            /*        HasMany::make('Расписание', 'doctorSession', resource: DoctorSessionResource::class)
                         ->fields([
                             Select::make('Тип сессии', 'session_meeting_time')
                                 ->options(\App\Models\DoctorSession::SESSION_MEETING_TIME)
@@ -135,6 +140,7 @@ class DoctorResource extends ModelResource
                                 ->creatable()
                         ])
                         ->creatable(),
+                        */
 //    ->options(\App\Models\Specialization::all()->pluck('name', 'id')),
    // ->options(\App\Models\Specialization::all()->pluck('name', 'id')),
                   /*  Image::make('Image')
@@ -193,6 +199,13 @@ class DoctorResource extends ModelResource
                     Text::make('До', 'to_time'),
                     Text::make('Пациент', 'patient_id'),
                  
+                ]),
+                HasMany::make('Отзывы', 'reviews', resource: ReviewResource::class)
+                ->fields([
+                    Text::make('Рейтинг', 'rating'),
+                    Text::make('Отзыв', 'review'),
+                    Text::make('Пациент', 'patient_id'),
+                    Text::make('Дата создания', 'created_at'),
                 ]),
         ];
     }
